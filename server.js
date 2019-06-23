@@ -7,7 +7,7 @@ const posts = require ('./routes/api/profile');
 
 
 const app = express ();
-app.use(bodyParse.urlencoded ({extended: false}));
+app.use(bodyParser.urlencoded ({extended: false}));
 app.use(bodyParser.json());
 
 //Db config

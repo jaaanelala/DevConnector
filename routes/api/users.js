@@ -4,11 +4,12 @@ const User = require('../../models/User');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 
+
 // @route POST api/user/register
 // @desc Register user
 // @access Public
 router.post('/register', (req,res) => {
-  User
+ User
     .findOne({email: req.body.email})
     .then(user => {
       if (user) {
@@ -31,18 +32,39 @@ router.post('/register', (req,res) => {
         });
 
         bcrypt.genSalt(10, (err, salt)=> {
-        if (err) throw err;
-        brcypt.hash(newUser.password, salt, (err, hash) => {
-        if (err) throw err;
-        newUser.password = hash;
-        newUser.save()
-        .then(user => res.json(user))
-        .catch(err => console.log(err));
+          if (err) throw err;
+          brcypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err;
+            newUser.password = hash;
+            newUser.save()
+              .then(user => res.json(user))
+              .catch(err => console.log(err));
       });
       });
-      }
-    })
+
+    }
+  } )
     .catch(err => console.log(err));  
 })
+
+// @route POST api/user/login
+// @desc Login user
+// @access Public
+router.post('/login', (req,rest) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  //Find user by email
+  User.findOne({email})
+    .then(user => {
+      if (!user){
+        return res.status(404).json({
+          email: 'User not found'
+        })
+      }
+    })
+    .catch(err => console.log(err));
+})
+
 
 module.exports = router;
