@@ -10,8 +10,8 @@ const bcrypt = require('bcryptjs');
 // @access Public
 router.post('/register', (req,res) => {
  User
-    .findOne({email: req.body.email})
-    .then(user => {
+  .findOne({email: req.body.email})
+  .then(user => {
       if (user) {
         return res.status(400).json({
           email: 'Email already exists'
@@ -60,11 +60,21 @@ router.post('/login', (req,rest) => {
       if (!user){
         return res.status(404).json({
           email: 'User not found'
-        })
+        });
       }
+      //Check password
+      bcrypt.compare(password, user.password)
+      .then(isMatch => {
+        if (isMatch) {
+          return res.json({msg: 'Success'});
+      }
+
+      return res.status(400).json(
+        {password: 'Password incorrect'});  
     })
+     
+  })
     .catch(err => console.log(err));
 })
-
 
 module.exports = router;
